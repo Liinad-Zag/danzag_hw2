@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <array>
 #include <variant>
 #include <unordered_map>
 
@@ -97,6 +98,7 @@ std::vector<Token> Tokenize(const std::string& input) {
     std::vector<Token> tokens;
     const size_t size = input.size();
     size_t pos = 0;
+    std::string value;
     while (pos < size) {
         const auto symbol = static_cast<unsigned char>(input[pos]);
         if (std::isspace(symbol)) {
@@ -113,12 +115,17 @@ std::vector<Token> Tokenize(const std::string& input) {
         else if (std::isalpha(symbol)){
             tokens.emplace_back(ParseName(input, pos));
         }
+        // Иначе неизвестный символ
+        else {
+            tokens.emplace_back(UnknownToken{ value=symbol });
+            pos++;
+        }
     }
     return tokens;
 }
 int main()
 {
-    std::string input = "min(123) + abS(2) - Max66";
+    std::string input = "min(123) + abS(2) - Max66 альфа";
     std::vector<Token> tokens = Tokenize(input);
     return 0;
 }
